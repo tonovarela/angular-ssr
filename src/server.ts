@@ -66,6 +66,3 @@ if (isMainModule(import.meta.url)) {
 }
 
 
-export async function netlifyCommonEngineHandler(request: Request, context: any): Promise<Response> {
-  return await render(commonEngine)
-}
