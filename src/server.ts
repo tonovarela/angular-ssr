@@ -1,21 +1,18 @@
 import { APP_BASE_HREF } from '@angular/common';
 import { CommonEngine, isMainModule } from '@angular/ssr/node';
-import { render } from '@netlify/angular-runtime/common-engine'
+
 import express from 'express';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import bootstrap from './main.server';
 
+import { render } from '@netlify/angular-runtime/common-engine'
 
 const serverDistFolder = dirname(fileURLToPath(import.meta.url));
 const browserDistFolder = resolve(serverDistFolder, '../browser');
 const indexHtml = join(serverDistFolder, 'index.server.html');
-
-
 const app = express();
 const commonEngine = new CommonEngine();
-
-
 /**
  * Example Express Rest API endpoints can be defined here.
  * Uncomment and define endpoints as necessary.
@@ -27,7 +24,6 @@ const commonEngine = new CommonEngine();
  * });
  * ```
  */
-
 /**
  * Serve static files from /browser
  */
@@ -38,27 +34,29 @@ app.get(
     index: 'index.html'
   }),
 );
-
 /**
  * Handle all other requests by rendering the Angular application.
  */
 
-export async function netlifyCommonEngineHandler(req: Request, context: any): Promise<Response> {
+export async function netlifyCommonEngineHandler(request: Request, context: any): Promise<Response> {
+  app.get('**', (req, res, next) => {
+    const { protocol, originalUrl, baseUrl, headers } = req;
+    commonEngine.render({
+      bootstrap,
+      documentFilePath: indexHtml,
+      url: `${protocol}://${headers.host}${originalUrl}`,
+      publicPath: browserDistFolder,
+      providers: [{ provide: APP_BASE_HREF, useValue: baseUrl }],
+    })
+      .then((html) => res.send(html))
+      .catch((err) => next(err));
+  });
   return await render(commonEngine)
 }
 
-app.get('**', (req, res, next) => {
-  const { protocol, originalUrl, baseUrl, headers } = req;
-  commonEngine.render({
-    bootstrap,
-    documentFilePath: indexHtml,
-    url: `${protocol}://${headers.host}${originalUrl}`,
-    publicPath: browserDistFolder,
-    providers: [{ provide: APP_BASE_HREF, useValue: baseUrl }],
-  })
-    .then((html) => res.send(html))
-    .catch((err) => next(err));
-});
+
+
+
 
 /**
  * Start the server if this module is the main entry point.
