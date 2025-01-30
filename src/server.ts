@@ -42,15 +42,20 @@ app.get(
 /**
  * Handle all other requests by rendering the Angular application.
  */
+
+export async function netlifyCommonEngineHandler(req: Request, context: any): Promise<Response> {
+  return await render(commonEngine)
+}
+
 app.get('**', (req, res, next) => {
   const { protocol, originalUrl, baseUrl, headers } = req;
-  render(commonEngine.render({
+  commonEngine.render({
     bootstrap,
     documentFilePath: indexHtml,
     url: `${protocol}://${headers.host}${originalUrl}`,
     publicPath: browserDistFolder,
     providers: [{ provide: APP_BASE_HREF, useValue: baseUrl }],
-  }))
+  })
     .then((html) => res.send(html))
     .catch((err) => next(err));
 });
