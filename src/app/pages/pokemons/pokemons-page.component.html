@@ -1,11 +1,16 @@
 <h1 class="text-3xl">Listado de pokemons</h1>
 
 <h2 class="text-3xl my-5"> Página actual</h2>
-<!-- TODO: pokemon-list  --> 
-<pokemon-list/>
-
+<hr class="my-2" />
+<!-- TODO: pokemon-list  -->
+<!-- @if(isLoading()){
+<pokemon-list-skeleton />
+}@else { -->
+<pokemon-list />
+<!-- } -->
 <!-- TODO:Pokemon-List Skeleton -->
-
-
 <!--TODO:Paginatión-->
-
+<div class="flex justify-between">
+    <button class="mt-2">Anteriores</button>
+    <button class="mt-2">Siguientes</button>
+</div>
