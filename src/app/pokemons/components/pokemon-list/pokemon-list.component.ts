@@ -1,6 +1,6 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, effect, input, OnInit } from '@angular/core';
 import { PokemonCardComponent } from '../pokemon-card/pokemon-card.component';
-import { PokemonListSkeletonComponent } from '../../../pages/pokemons/ui/pokemon-list-skeleton/pokemon-list-skeleton.component';
+import { Pokemon } from '../../../pages/pokemons/interfaces';
 
 @Component({
   selector: 'pokemon-list',
@@ -9,4 +9,14 @@ import { PokemonListSkeletonComponent } from '../../../pages/pokemons/ui/pokemon
   styleUrl: './pokemon-list.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class PokemonListComponent { }
+export class PokemonListComponent implements OnInit {
+  public pokemons = input.required<Pokemon[]>();
+
+  ngOnInit(): void {    
+
+  }
+
+  
+
+
+}

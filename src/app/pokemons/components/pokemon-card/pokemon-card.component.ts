@@ -1,4 +1,6 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, effect, input } from '@angular/core';
+import { Pokemon } from '../../../pages/pokemons/interfaces';
+
 
 @Component({
   selector: 'pokemon-card',
@@ -7,4 +9,10 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
   styleUrl: './pokemon-card.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class PokemonCardComponent { }
+export class PokemonCardComponent  {
+
+  public pokemon = input.required<Pokemon>();
+
+  public readonly imagen= computed(()=>`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${this.pokemon().id}.png`);
+  
+ }
