@@ -1,11 +1,13 @@
-import {  ChangeDetectionStrategy, Component, inject, OnDestroy, OnInit, signal, effect } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, OnDestroy, OnInit, signal, effect } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop'
+import { Title } from '@angular/platform-browser';
 import { PokemonListComponent } from '../../pokemons/components/pokemon-list/pokemon-list.component';
 import { PokemonListSkeletonComponent } from './ui/pokemon-list-skeleton/pokemon-list-skeleton.component';
 import { PokemonsService } from './services/pokemons.service';
 import { Pokemon } from './interfaces';
-import { ActivatedRoute } from '@angular/router';
-import { map } from 'rxjs';
-import { toSignal } from '@angular/core/rxjs-interop'
+import { ActivatedRoute, Router } from '@angular/router';
+import { map, tap } from 'rxjs';
+
 
 
 @Component({
@@ -20,17 +22,23 @@ export default class PokemonsPageComponent
 {
 
   public route = inject(ActivatedRoute);
+  public router = inject(Router);
+
+  private title=inject(Title);
+
+  
+
   public currentPage = toSignal<number>(this.route.queryParamMap.pipe(
     map((params) => params.get('page') ?? '1'),
     map((page) => (isNaN(+page)) ? 1 : +page),
-    map((page) => Math.max(page, 1) )
+    map((page) => Math.max(1, page))
   ));
   pokemonService = inject(PokemonsService);
   public pokemons = signal<Pokemon[]>([]);
 
   public isLoading = signal(false);
 
-  
+
   // private appRef= inject(ApplicationRef);
   // private $appState = this.appRef.isStable.subscribe((isStable) => {
   //   console.log('App state changed', isStable);
@@ -38,33 +46,35 @@ export default class PokemonsPageComponent
 
 
 
-  constructor(){
+
+  constructor() {
     effect(() => {
-      console.log('Current Page', this.currentPage());
-      this.loadPage(this.currentPage());
+      console.log('Current Page', this.currentPage());      
     });
   }
-   
-
-
-
 
   ngOnInit(): void {
     this.loadPage();
-    console.log('Current Page', this.currentPage());
-    
     // setTimeout(() => {
     //   this.isLoading.set(false);
     // },1000);
   }
 
 
-  loadPage(nexPage = 0): void {
+  loadPage(page = 0): void {
+    const pagetoLoad = this.currentPage()! + page;
+    if (pagetoLoad ==0 ) return;
     this.isLoading.set(true);
-    this.pokemonService.loadPage(nexPage).subscribe((pokemons) => {
-      this.pokemons.set(pokemons);
-      this.isLoading.set(false);
-    });
+    
+    this.pokemonService
+      .loadPage(pagetoLoad)
+      .pipe(        
+        tap(() => { 
+          this.isLoading.set(false);
+          this.title.setTitle(`Pokemons - Page ${pagetoLoad}`);
+          this.router.navigate([], { queryParams: { page: pagetoLoad } }); } )
+      )
+      .subscribe((pokemons) => this.pokemons.set(pokemons));
 
   }
 

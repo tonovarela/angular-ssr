@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { delay, map, Observable } from 'rxjs';
-import { Pokemon, PokemonAPIResponse } from '../interfaces';
+import { Pokemon, PokemonAPIResponse, PokemonDetalleResponse } from '../interfaces';
 
 @Injectable({
   providedIn: 'root'
@@ -13,11 +13,10 @@ export class PokemonsService {
 
 
   public loadPage(page: number): Observable<Pokemon[]> {
-    if (page !== 0) {
-      --page;
-    }
-    page = Math.max(0, page);
-    return this.httpClient.get<PokemonAPIResponse>(`${this.urlAPI}/pokemon?offset=${page * 20}&limit=20`)
+    
+    const limit = 12;
+    page = Math.max(1, page);    
+    return this.httpClient.get<PokemonAPIResponse>(`${this.urlAPI}/pokemon?offset=${ (page-1) * limit}&limit=${limit}`)
     
       .pipe(
         //delay(3000),
@@ -30,6 +29,10 @@ export class PokemonsService {
         })
         ))
 
+  }
+
+  public loadById(id: number): Observable<Pokemon> {
+      return this.httpClient.get<PokemonDetalleResponse>(`${this.urlAPI}/pokemon/${id}`);
   }
 
 }
