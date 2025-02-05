@@ -36,7 +36,7 @@ export default class PokemonPageComponent implements OnInit {
         this.meta.updateTag({ name: 'description', content: pageDescription });
         this.meta.updateTag({ name: 'og:title', content: title });
         this.meta.updateTag({ name: 'og:description', content: pageDescription });
-        this.meta.updateTag({ name: 'og:image', content: `https://assets.pokemon.com/assets/cms2/img/pokedex/full/${id}.png` });
+        this.meta.updateTag({ name: 'og:image', content: `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${id}.png` });
       }))
       .subscribe(this.pokemon.set);
 
