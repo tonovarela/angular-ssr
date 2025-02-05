@@ -31,7 +31,7 @@ export class PokemonsService {
 
   }
 
-  public loadById(id: number): Observable<PokemonDetalle> {
+  public loadById(id: string): Observable<PokemonDetalle> {
       return this.httpClient.get<PokemonDetalle>(`${this.urlAPI}/pokemon/${id}`);
   }
 

@@ -11,8 +11,12 @@
 <!-- TODO:Pokemon-List Skeleton -->
 <!--TODO:Paginatión-->
 <div class="flex justify-between">
-    <button (click)="loadPage(-1)" [disabled]="currentPage()==1" class="mt-2 disabled:cursor-not-allowed">Anteriores</button>
-    <button (click)="loadPage(1)" class="mt-2">Siguientes</button>
+    <button 
+    [routerLink]="['/pokemons/page/',currentPage()!-1]"
+    [disabled]="currentPage()==1" class="mt-2 disabled:cursor-not-allowed">Anteriores</button>
+    <button 
+    [routerLink]="['/pokemons/page/',currentPage()!+1]"
+     class="mt-2">Siguientes</button>
 
     
 </div>

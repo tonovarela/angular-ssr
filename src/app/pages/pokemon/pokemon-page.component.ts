@@ -25,10 +25,10 @@ export default class PokemonPageComponent implements OnInit {
   
 
   ngOnInit(): void {
-    const id = this.router.snapshot.paramMap.get('id') ?? 0;
+    const id = this.router.snapshot.paramMap.get('id') ?? '0';
     if (!id) return;
 
-    this.pokemonService.loadById(+id)
+    this.pokemonService.loadById(id)
       .pipe(tap(({ id, name }: PokemonDetalle)=>{
         const title = `${id} - ${name}`;
         const pageDescription = `Información del pokemon ${name}`;        

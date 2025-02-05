@@ -5,14 +5,14 @@ import { PokemonListComponent } from '../../pokemons/components/pokemon-list/pok
 import { PokemonListSkeletonComponent } from './ui/pokemon-list-skeleton/pokemon-list-skeleton.component';
 import { PokemonsService } from './services/pokemons.service';
 import { Pokemon } from './interfaces';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { map, tap } from 'rxjs';
 
 
 
 @Component({
   selector: 'pokemons-page',
-  imports: [PokemonListComponent, PokemonListSkeletonComponent],
+  imports: [PokemonListComponent, PokemonListSkeletonComponent,RouterLink],
   templateUrl: './pokemons-page.component.html',
   styleUrl: './pokemons-page.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -28,8 +28,8 @@ export default class PokemonsPageComponent
 
   
 
-  public currentPage = toSignal<number>(this.route.queryParamMap.pipe(
-    map((params) => params.get('page') ?? '1'),
+  public currentPage = toSignal<number>(this.route.params.pipe(
+    map((params) => params['page'] ?? '1'),
     map((page) => (isNaN(+page)) ? 1 : +page),
     map((page) => Math.max(1, page))
   ));
@@ -44,21 +44,18 @@ export default class PokemonsPageComponent
   //   console.log('App state changed', isStable);
   // });
 
+public loadOnPageChange =effect(()=>{  
+  this.loadPage(this.currentPage()!-1);
+})
 
+  
 
-
-  constructor() {
-    effect(() => {
-      console.log('Current Page', this.currentPage());      
-    });
-  }
-
-  ngOnInit(): void {
-    this.loadPage();
-    // setTimeout(() => {
-    //   this.isLoading.set(false);
-    // },1000);
-  }
+  // ngOnInit(): void {
+  //   this.loadPage();
+  //   // setTimeout(() => {
+  //   //   this.isLoading.set(false);
+  //   // },1000);
+  // }
 
 
   loadPage(page = 0): void {
@@ -72,7 +69,9 @@ export default class PokemonsPageComponent
         tap(() => { 
           this.isLoading.set(false);
           this.title.setTitle(`Pokemons - Page ${pagetoLoad}`);
-          this.router.navigate([], { queryParams: { page: pagetoLoad } }); } )
+        //  this.router.navigate([], { queryParams: { page: pagetoLoad } }); 
+        } 
+        )
       )
       .subscribe((pokemons) => this.pokemons.set(pokemons));
 
