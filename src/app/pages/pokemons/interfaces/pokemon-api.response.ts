@@ -12,7 +12,7 @@ export interface Result {
 
 
 
-export interface PokemonDetalleResponse {
+export interface PokemonDetalle {
     abilities:                Ability[];
     base_experience:          number;
     cries:                    Cries;

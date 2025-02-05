@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { delay, map, Observable } from 'rxjs';
-import { Pokemon, PokemonAPIResponse, PokemonDetalleResponse } from '../interfaces';
+import { Pokemon, PokemonAPIResponse, PokemonDetalle } from '../interfaces';
 
 @Injectable({
   providedIn: 'root'
@@ -31,8 +31,8 @@ export class PokemonsService {
 
   }
 
-  public loadById(id: number): Observable<Pokemon> {
-      return this.httpClient.get<PokemonDetalleResponse>(`${this.urlAPI}/pokemon/${id}`);
+  public loadById(id: number): Observable<PokemonDetalle> {
+      return this.httpClient.get<PokemonDetalle>(`${this.urlAPI}/pokemon/${id}`);
   }
 
 }

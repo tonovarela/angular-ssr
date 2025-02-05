@@ -4,9 +4,34 @@
     <div class="text-4xl font-bold">Loading...</div>
 </div>
 }@else{
+@let pokemonView = pokemon()!;
 <section class="flex flex-col justify-center">
     <div>
-        <h1 class="text-4xl font-bold capitalize my-5">{{pokemon()?.name}}</h1>
+        <h1 class="text-4xl font-bold capitalize my-5">{{pokemonView.name}}</h1>
+    </div>
+</section>
+<section class="flex flex-col justify-center items-center">
+    <img [src]="pokemonView.sprites.other?.['official-artwork']?.front_default" [alt]="pokemonView.name"
+        class="w-64 h-64"  width="256px" height="256px" />
+    
+    @if(pokemonView.cries.latest)
+    {
+    <audio controls class="my-10"> 
+        <source [src]="pokemonView.cries.latest" type="audio/wav"/>
+        Your browser does not support the audio element.
+    </audio>
+    }
+</section>
+
+<section class="flex  flex-col justify-center">
+    <h2 class="text-2xl font-bold mt-2">Abilities</h2>
+    <div class=" flex flex-wrap items-center">
+        @for(abilities of pokemonView.abilities; track $index)
+        {
+            <span class="text-lg font-bold m-2">
+                {{abilities.ability.name}}
+            </span>
+        }
     </div>
 
 
